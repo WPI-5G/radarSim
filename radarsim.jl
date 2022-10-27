@@ -6,6 +6,9 @@ module radarsim
     export POW;
     export gen_pulse_train, sim_return, single_pulse;
 
+    c = 299_792_458;  # the speed of light
+    export c;
+
     struct Target
         range::Int          #Meters
         attenuation::Int    #dB
@@ -51,8 +54,9 @@ module radarsim
         return t, pulse;
     end
 
-    function sim_return(samp_rate, pulse_train, targets::Array{Target}; system_loss=6, Gt=20, Gr=20, SNR = 100)
+    function sim_return(samp_rate, pulse_train, targets::Array{Target}; fc = Int(900e6), system_loss=6, Gt=20, Gr=20, SNR = 100)
         rx_pulse_train = zeros(ComplexF64, length(pulse_train))
+        num_targets = length(targets);
         for i in 1:num_targets
             range = targets[i].range
 
