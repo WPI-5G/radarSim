@@ -24,7 +24,7 @@ module radarsim
         if envelope_type == "Rectangular"
             a = ones(length(t));
             if(length(a) > τ * samp_rate)
-                a[Int(τ*samp_rate):end] .= 0;
+                a[(τ*samp_rate):end] .= 0;
             end
         elseif envelope_type == "Gaussian"
             a = exp.((-t.^2)/(τ^2)) #Gaussian
@@ -42,7 +42,7 @@ module radarsim
     end
 
     function gen_pulse_train(repetitions, samp_rate, prf, τ, β; envelope_type="Rectangular", pulse_type="Increasing")
-        pulse = Array{ComplexF64}(undef,Int(round(1/prf * repetitions * samp_rate)));
+        pulse = Array{ComplexF64}(undef,round(Int, 1/prf * repetitions * samp_rate));
         t, p = single_pulse(samp_rate, prf, τ, β, envelope_type=envelope_type, pulse_type=pulse_type);
 
         for i in 0:repetitions-1
