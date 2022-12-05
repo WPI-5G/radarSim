@@ -24,7 +24,7 @@ module radarsim
         if envelope_type == "Rectangular"
             a = ones(length(t));
             if(length(a) > τ * samp_rate)
-                a[(τ*samp_rate):end] .= 0;
+                a[round(Int, τ*samp_rate):end] .= 0;
             end
         elseif envelope_type == "Gaussian"
             a = exp.((-t.^2)/(τ^2)) #Gaussian
