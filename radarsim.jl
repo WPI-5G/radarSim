@@ -29,7 +29,8 @@ module radarsim
         elseif envelope_type == "Gaussian"
             a = exp.((-t.^2)/(τ^2)) #Gaussian
         elseif envelope_type == "HalfSin"
-            a = sin.(1/(prt/pi).*t); #Half Sin Wave
+            a = zeros(length(t));
+            a[1:round(Int, τ * samp_rate )] = sin.(1/(τ/pi).*t[1:round(Int, τ * samp_rate )]);
         end
 
         if pulse_type == "Increasing"
