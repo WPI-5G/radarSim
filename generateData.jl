@@ -10,7 +10,7 @@ using .radarsim;
 print(Threads.nthreads());
 print("\n")
 
-dataPoints = 100;
+dataPoints = 500;
 
 
 
