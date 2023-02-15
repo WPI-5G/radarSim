@@ -37,6 +37,14 @@ module radarsim
             pulse = a.*exp.(im*π*(β/τ)*t.^2)
         elseif pulse_type == "Decreasing"
             pulse = a.*exp.(-im*π*β/τ*(t.^2 - 2*τ.*t))
+        elseif pulse_type == "NOrderPoly"
+            coefficients = [1, 14, 1];
+            coefficients = coefficients.*(β/τ);
+            # pushfirst!(coefficients, 0);
+            pwr = Array((1:length(coefficients)))';
+            f = (t.^pwr).*coefficients';
+            f = vec(sum(f, dims=2));
+            pulse = a.*exp.(im*π.*f.*t);
         end
 
         pulse = pulse * 10^((target_pow - POW(pulse))/20)
@@ -83,6 +91,6 @@ module radarsim
         
         rx_pulse_train = rx_pulse_train .+ noise;
 
-        return rx_pulse_train
+        return rx_pulse_train, noise
     end
 end
