@@ -38,7 +38,7 @@ module radarsim
         elseif pulse_type == "Decreasing"
             pulse = a.*exp.(-im*π*β/τ*(t.^2 - 2*τ.*t))
         elseif pulse_type == "NOrderPoly"
-            coefficients = [1, 14, 1];
+            # coefficients = [3, 62, 10];
             coefficients = coefficients.*(β/τ);
             # pushfirst!(coefficients, 0);
             pwr = Array((1:length(coefficients)))';
