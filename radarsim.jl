@@ -17,7 +17,7 @@ module radarsim
     FSPL(d,f) = 20*log10(d) + 20*log10(f) + 20*log10(4π/c)  #Free Space Path Loss 
     POW(sig) = 10*log10(sum(abs.(sig).^2)/length(sig));     #Power of complex signal
 
-    function single_pulse(samp_rate, prf, τ, β, coefficients; target_pow = 0, envelope_type="Rectangular", pulse_type="Increasing")
+    function single_pulse(samp_rate, prf, τ, β, coefficients; target_pow = 0, envelope_type="Rectangular", pulse_type="NOrderPoly")
         prt = 1/prf;
         t = 1/samp_rate:1/samp_rate:prt;
 
@@ -52,7 +52,7 @@ module radarsim
         return t, pulse;
     end
 
-    function gen_pulse_train(repetitions, samp_rate, prf, τ, β, coefficients; envelope_type="Rectangular", pulse_type="Increasing")
+    function gen_pulse_train(repetitions, samp_rate, prf, τ, β, coefficients; envelope_type="Rectangular", pulse_type="NOrderPoly")
         pulse = Array{ComplexF64}(undef,round(Int, 1/prf * repetitions * samp_rate));
         t, p = single_pulse(samp_rate, prf, τ, β, coefficients, envelope_type=envelope_type, pulse_type=pulse_type);
 
