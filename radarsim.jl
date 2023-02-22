@@ -54,7 +54,7 @@ module radarsim
 
     function gen_pulse_train(repetitions, samp_rate, prf, τ, β; envelope_type="Rectangular", pulse_type="Increasing", coefficients=[1])
         pulse = Array{ComplexF64}(undef,round(Int, 1/prf * repetitions * samp_rate));
-        t, p = single_pulse(samp_rate, prf, τ, β, coefficients, envelope_type=envelope_type, pulse_type=pulse_type);
+        t, p = single_pulse(samp_rate, prf, τ, β, envelope_type=envelope_type, pulse_type=pulse_type, coefficients=coefficients);
 
         for i in 0:repetitions-1
             idx = i*length(t)
