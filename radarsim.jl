@@ -17,7 +17,7 @@ module radarsim
     FSPL(d,f) = 20*log10(d) + 20*log10(f) + 20*log10(4π/c)  #Free Space Path Loss 
     POW(sig) = 10*log10(sum(abs.(sig).^2)/length(sig));     #Power of complex signal
 
-    function single_pulse(samp_rate, prf, τ, β; target_pow = 0, envelope_type="Rectangular", pulse_type="Increasing")
+    function single_pulse(samp_rate, prf, τ, β; target_pow = 0, envelope_type="Rectangular", pulse_type="Increasing", coefficients=[1])
         prt = 1/prf;
         t = 1/samp_rate:1/samp_rate:prt;
 
@@ -37,6 +37,14 @@ module radarsim
             pulse = a.*exp.(im*π*(β/τ)*t.^2)
         elseif pulse_type == "Decreasing"
             pulse = a.*exp.(-im*π*β/τ*(t.^2 - 2*τ.*t))
+        elseif pulse_type == "NOrderPoly"
+            # coefficients = [3, 62, 10];
+            coefficients = coefficients.*(β/τ);
+            # pushfirst!(coefficients, 0);
+            pwr = Array((1:length(coefficients)))';
+            f = (t.^pwr).*coefficients';
+            f = vec(sum(f, dims=2));
+            pulse = a.*exp.(im*π.*f.*t);
         end
 
         pulse = pulse * 10^((target_pow - POW(pulse))/20)
@@ -44,9 +52,9 @@ module radarsim
         return t, pulse;
     end
 
-    function gen_pulse_train(repetitions, samp_rate, prf, τ, β; envelope_type="Rectangular", pulse_type="Increasing")
+    function gen_pulse_train(repetitions, samp_rate, prf, τ, β; envelope_type="Rectangular", pulse_type="Increasing", coefficients=[1])
         pulse = Array{ComplexF64}(undef,round(Int, 1/prf * repetitions * samp_rate));
-        t, p = single_pulse(samp_rate, prf, τ, β, envelope_type=envelope_type, pulse_type=pulse_type);
+        t, p = single_pulse(samp_rate, prf, τ, β, envelope_type=envelope_type, pulse_type=pulse_type, coefficients=coefficients);
 
         for i in 0:repetitions-1
             idx = i*length(t)
@@ -83,6 +91,6 @@ module radarsim
         
         rx_pulse_train = rx_pulse_train .+ noise;
 
-        return rx_pulse_train
+        return rx_pulse_train, noise
     end
 end
