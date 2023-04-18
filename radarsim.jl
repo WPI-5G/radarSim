@@ -39,7 +39,9 @@ module radarsim
             pulse = a.*exp.(-im*π*β/τ*(t.^2 - 2*τ.*t))
         elseif pulse_type == "NOrderPoly"
             # coefficients = [3, 62, 10];
-            coefficients = coefficients.*(β/τ);
+            for i in range(1:length(coefficients))
+                coefficients = coefficients.*(β/τ)^((i+1)/2);
+            end
             # pushfirst!(coefficients, 0);
             pwr = Array((1:length(coefficients)))';
             f = (t.^pwr).*coefficients';
@@ -85,7 +87,7 @@ module radarsim
             rx_pulse_train[offset+1:end] = rx_pulse_train[offset+1:end] .+ target_pulse_train[begin:end-offset] #TODO: Why +1        
         end
         
-        noise = rand(ComplexF64, length(rx_pulse_train));        
+        noise = rand(ComplexF64, length(rx_pulse_train));
         noise_pwr = POW(rx_pulse_train) - SNR;
         noise = noise * 10^((noise_pwr - POW(noise)/20))
         
