@@ -39,8 +39,8 @@ module radarsim
             pulse = a.*exp.(-im*π*β/τ*(t.^2 - 2*τ.*t))
         elseif pulse_type == "NOrderPoly"
             # coefficients = [3, 62, 10];
-            for i in range(1:length(coefficients))
-                coefficients = coefficients.*(β/τ)^((i+1)/2);
+            for i in 1:length(coefficients)
+                coefficients[i] = coefficients[i]*(β/τ)^((i+1)/2);
             end
             # pushfirst!(coefficients, 0);
             pwr = Array((1:length(coefficients)))';
