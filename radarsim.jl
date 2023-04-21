@@ -38,11 +38,11 @@ module radarsim
         elseif pulse_type == "Decreasing"
             pulse = a.*exp.(-im*π*β/τ*(t.^2 - 2*τ.*t))
         elseif pulse_type == "NOrderPoly"
-            # coefficients = [3, 62, 10];
-            for i in 1:length(coefficients)
-                coefficients[i] = coefficients[i]*(β/τ)^((i+1)/2);
-            end
-            # pushfirst!(coefficients, 0);
+            # for i in 1:length(coefficients)
+            #     coefficients[i] = coefficients[i]*(β/τ)^((i+1)/2); # Cancel units in complex exponential
+            # end
+            coefficients = coefficients.*(β/τ);
+            # pushfirst!(coefficients, 0); # Add a t^0 coefficient
             pwr = Array((1:length(coefficients)))';
             f = (t.^pwr).*coefficients';
             f = vec(sum(f, dims=2));
